@@ -34,5 +34,10 @@ exports.checkAdmin = (req, res, next) => {
 }
 
 exports.checkAdminOrVet = (req, res, next) => {
-
+  const user = res.locals.user
+  if (user.role === 'admin' || user.role === 'vet') {
+    next()
+  } else {
+    res.status(403).json({ msg: 'Access not allowed' })
+  }
 }

@@ -41,8 +41,9 @@ exports.signup = (req, res) => {
       UserModel
         .create(userData)
         .then(user => {
-          delete user.password
-          res.status(201).json(user)
+          const newUser = JSON.parse(JSON.stringify(user))
+          delete newUser.password
+          res.status(201).json(newUser)
         })
         .catch(error => {
           console.log(error)
