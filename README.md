@@ -17,6 +17,7 @@
 | pets         | [ObjectId] |                | False    |                          |
 | address      | Object     | Address Object | True     |                          |
 
+##
 
 ### Addresses
 | Key          | Type       | Reference      | Required | Validation               |
@@ -27,6 +28,7 @@
 | state        | String     |                | False    |                          |
 | country      | String     |                | False    |                          |
 
+##
 
 ### Pets
 | Key          | Type       | Reference      | Required | Validation               |
@@ -42,6 +44,7 @@
 | notes        | [ObjectId] | Notes          | False    |                          |
 | record       | [ObjectId] | Cases          | False    |                          |
 
+##
 
 ### Cases
 | Key          | Type       | Reference         | Required | Validation            |
@@ -57,6 +60,7 @@
 | vet          | ObjectId   | User              | False    |                       |
 | vitalSigns   | Object     | VitalSigns Object | False    |                       |
 
+##
 
 ### VitalSigns
 | Key           | Type       | Reference      | Required | Validation              |
@@ -68,6 +72,7 @@
 | heartRate     | Number     |                | False    |                         |
 | breathingRate | Number     |                | False    |                         |
 
+##
 
 ### Notes
 | Key           | Type       | Reference      | Required | Validation              |
@@ -78,6 +83,7 @@
 | public        | Boolean    |                | True     | Default: false          |
 | text          | String     |                | True     |                         |
 
+##
 
 ### Tests
 | Key           | Type       | Reference      | Required | Validation              |
@@ -90,6 +96,7 @@
 | observations  | String     |                | False    |                         |
 | vet           | ObjectId   | Users          | True     |                         |
 
+##
 
 ### Treatments
 | Key           | Type       | Reference      | Required | Validation              |
@@ -101,3 +108,23 @@
 | description   | String     |                | True     |                         |
 | observations  | String     |                | False    |                         |
 
+##
+
+## API Endpoints
+All the endpoints are preceeded by `/api`.
+
+- ### Auth
+|Verb|Route|Description|Auth.
+|-|-|-|-|
+|POST|**/auth/login** |Log in with email and password
+|POST|**/auth/signup**|Register a new User in the App
+
+## 
+
+## Team
+- **Daniel Jesús Brito Sosa** - _Desarrollador Web y Diseñador gráfico_ - [leynad1392](https://github.com/leynad1392)
+- **María José Siverio Pestana** - _Desarrolladora Web_ [Arixka](https://github.com/Arixka)
+- **Ehedei Hernández García** - _Desarrollador Multiplataforma_ [ehedei](https://github.com/ehedei)
+
+## License
+MIT License
