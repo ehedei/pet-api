@@ -47,7 +47,7 @@ exports.signup = (req, res) => {
         })
         .catch(error => {
           console.log(error)
-          res.status(409).json({ error: 'Something in the request is not correct' })
+          res.status(409).json({ msg: 'Something in the request is not correct' })
         })
     })
     .catch(error => {

@@ -7,9 +7,9 @@ const router = require('express').Router()
 router.get('/', checkAuth, checkAdminOrVet, getAllUsers)
 router.get('/profile', checkAuth, getUserProfile)
 router.get('/:userId', checkAuth, checkAdminOrVet, getUserById)
+router.post('/', checkAuth, checkAdminOrVet, signup)
 router.put('/update', checkAuth, updateProfile)
 router.put('/:userId', checkAuth, checkAdminOrVet, updateUser)
-router.post('/', checkAuth, checkAdminOrVet, signup)
 router.delete('/:userId', checkAuth, checkAdmin, deleteUser)
 
 exports.userRouter = router
