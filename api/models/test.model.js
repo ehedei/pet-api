@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
-const testSchema = new.mongoose.Schema({
+const testSchema = new mongoose.Schema({
   date : { 
-    type: date, 
+    type: Date, 
     required: [true, 'Date field is required']
   }, 
   type : { 
