@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   username: {
     type: String,
-    unique: [true, 'User already exits in Application']
+    unique: [true, 'User already exists in Application']
   },
   firstName: String,
   lastName: String,
