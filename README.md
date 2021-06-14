@@ -116,8 +116,8 @@ All the endpoints are preceeded by `/api`.
 - ### Auth
 |Verb|Route|Description|Auth.
 |-|-|-|-|
-|POST|**/auth/login** |Log in with email and password
-|POST|**/auth/signup**|Register a new User in the App
+|POST|**/auth/login** |Log in with email and password|-|
+|POST|**/auth/signup**|Register a new User in the App|-|
 
 ## 
 
