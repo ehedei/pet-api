@@ -72,6 +72,76 @@ exports.deletePet = (req, res) => {
     })
 }
 
+exports.getNotesFromPet = (req, res) => {
+  PetModel
+    .findById(req.params.petId)
+    .poulate('notes')
+    .then(pet => {
+      if (res.locals.user.role !== 'user' || pet._id in res.locals.user.pets) {
+        const notes = pet.notes.filter(note => note.public === true || note.author === res.locals.user._id)
+
+        res.status(200).json(notes)
+      } else {
+        res.status(403).json({ msg: 'Access not allowed' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.addNoteToPet = (req, res) => {
+  PetModel
+    .findById(req.params.petId)
+    .populate('notes')
+    .then(pet => {
+      if (res.locals.user.role !== 'user' || pet._id in res.locals.user.pets) {
+        const note = {
+          date: req.body.date,
+          author: req.body.author,
+          text: req.body.text,
+          public: req.body.public
+        }
+        pet.notes.push(note)
+        pet.save()
+          .then(pet => {
+            const notes = pet.notes.filter(note => note.author === res.locals.user._id)
+            res.status(201).json(notes)
+          })
+      } else {
+        res.status(403).json({ msg: 'Access not allowed' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.deleteNoteFromPet = (req, res) => {
+  PetModel
+    .findById(req.params.petId)
+    .populate('notes')
+    .then(pet => {
+      if (res.locals.user.role === 'admin' || pet._id in res.locals.user.pets) {
+        const note = pet.notes.id(req.params.noteId)
+        note.remove()
+        pet.save()
+          .then(pet => {
+            const notes = pet.notes.filter(note => note.author === res.locals.user._id)
+            res.status(202).json(notes)
+          })
+      } else {
+        res.status(403).json({ msg: 'Access not allowed' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
 function preparePet(body) {
   const pet = {
     name: body.name ?? this.name,
