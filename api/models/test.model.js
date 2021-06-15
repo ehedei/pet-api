@@ -15,10 +15,10 @@ const testSchema = new mongoose.Schema({
   }, 
   results: { type: String },
   observations: { type: String },
-  vet: [{
+  vet: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
-  }]
+  }
 })
 
 exports.TestModel = mongoose.model('test', testSchema)
