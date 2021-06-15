@@ -1,10 +1,16 @@
 
-const { getAllTreatment, getTreatmentById, createTreatment, deleteTreatment, updateTreatment } = require('../controllers/treantemnt.controller.js')
+const { checkAdmin, checkAdminOrVet, checkAuth } = require('../../utils/auth.js')
+const { getAllTreatments, createTreatment } = require('../controllers/treatment.controller')
+const { getTreatmentById } = require('../controllers/treatment.controller')
+const { updateTreatment } = require('../controllers/treatment.controller')
+const { deleteTreatment } = require('../controllers/treatment.controller')
 
 const router = require('express').Router()
 
-router.get('/, treatment', getAllTreatment)
-router.get('/:treatmentId', getTreatmentById)
-router.get('/:treatment', createTreatment)
-router.delete('/:treatmentId', deleteTreatment)
-router.update('/treatmentid', updateTreatment)
+router.get('/', checkAuth, checkAdminOrVet, getAllTreatments)
+router.post('/', checkAuth, checkAdminOrVet, createTreatment)
+router.get('/:treatmentId', checkAuth, checkAdminOrVet, getTreatmentById)
+router.delete('/:treatmentId', checkAuth, checkAdminOrVet, deleteTreatment)
+router.put('/:treatmentId', checkAuth, checkAdminOrVet, updateTreatment)
+
+exports.treatmentRouter = router
