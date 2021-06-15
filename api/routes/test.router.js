@@ -6,7 +6,6 @@ router.get('/', checkAuth, checkAdminOrVet, getAllTests)
 router.get('/:testId', checkAuth, checkAdminOrVet, getTestById)
 router.put('/:testId', checkAuth, checkAdminOrVet, updateTestById)
 router.delete('/:testId', checkAuth, checkAdminOrVet, deleteTestById)
-
 router.post('/', checkAuth, checkAdminOrVet, createTest)
 
 exports.testRouter = router
