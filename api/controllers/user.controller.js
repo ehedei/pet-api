@@ -1,5 +1,6 @@
 const { UserModel } = require('../models/user.model')
 const bcrypt = require('bcrypt')
+const { PetModel } = require('../models/pet.model')
 
 exports.getAllUsers = (req, res) => {
   UserModel
@@ -32,7 +33,7 @@ exports.getUserById = (req, res) => {
 exports.getUserProfile = (req, res) => {
   UserModel
     .findById(res.locals.user._id.toString())
-    .populate()
+    .populate('pets')
     .then(user => {
       const newUser = duplicateUserWithoutPass(user)
       res.status(200).json(newUser)
@@ -92,6 +93,31 @@ exports.updateProfile = (req, res) => {
   }
 }
 
+exports.addPetToUser = (req, res) => {
+  const user = res.locals.user
+  const pet = req.body
+  if (pet.notes || pet.cases) {
+    res.status(409).json({ msg: 'There is something wrong in the request' })
+  } else {
+    PetModel
+      .create(pet)
+      .then(newPet => {
+        user.pets.push(newPet)
+        user
+          .save()
+          .then(user => res.status(201).json(newPet))
+          .catch(error => {
+            console.log(error)
+            res.status(500).json({ msg: 'Error in Server' })
+          })
+      })
+      .catch(error => {
+        console.log(error)
+        res.status(500).json({ msg: 'Error in Server' })
+      })
+  }
+}
+
 function makeUpdateProfile (req, res) {
   const user = res.locals.user
   setUpdatesInUser(user, req.body)
@@ -106,7 +132,6 @@ function makeUpdateProfile (req, res) {
       res.status(500).json({ msg: 'Error in Server' })
     })
 }
-
 
 function prepareUserUpdates(req, res) {
   UserModel
@@ -129,7 +154,7 @@ function prepareUserUpdates(req, res) {
     })
 }
 
-function setUpdatesInUser(user, updates) {
+function setUpdatesInUser (user, updates) {
   for (const property in updates) {
     if (typeof updates[property] === 'object') {
       setUpdatesInUser(user[property], updates[property])
@@ -139,7 +164,7 @@ function setUpdatesInUser(user, updates) {
   }
 }
 
-function duplicateUserWithoutPass(user) {
+function duplicateUserWithoutPass (user) {
   const newUser = JSON.parse(JSON.stringify(user))
   delete newUser.password
   return newUser

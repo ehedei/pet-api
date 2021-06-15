@@ -16,10 +16,14 @@ exports.getNoteById = (req, res) => {
   NoteModel
     .findById(req.params.noteId)
     .then(note => {
-      if (res.locals.user.role === 'admin' || note.author === res.locals.user._id) {
-        res.status(200).json(note)
+      if (note) {
+        if (res.locals.user.role === 'admin' || note.author === res.locals.user._id) {
+          res.status(200).json(note)
+        } else {
+          res.status(403).json({ msg: 'Access not allowed' })
+        }
       } else {
-        res.status(403).json({ msg: 'Access not allowed' })
+        res.status(404).json({ msg: 'Resource not found' })
       }
     })
     .catch(error => {
@@ -31,7 +35,7 @@ exports.getNoteById = (req, res) => {
 exports.saveNote = (req, res) => {
   const note = {
     date: req.body.date,
-    author: req.body.author,
+    author: res.locals.user._id,
     text: req.body.text,
     public: req.body.public
   }
@@ -47,7 +51,13 @@ exports.saveNote = (req, res) => {
 
 exports.deleteNote = (req, res) => {
   NoteModel.findByIdAndDelete(req.params.noteId)
-    .then(note => res.status(202).json(note))
+    .then(note => {
+      if (note) {
+        res.status(202).json(note)
+      } else {
+        res.status(404).json({ msg: 'Resource not found' })
+      }
+    })
     .catch(error => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
@@ -57,18 +67,22 @@ exports.deleteNote = (req, res) => {
 exports.updateNote = (req, res) => {
   NoteModel.findById(req.params.noteId)
     .then(note => {
-      if (res.locals.user.role === 'admin' || note.author === res.locals.user._id) {
-        note.date = req.body.date ?? note.date
-        note.text = req.body.text ?? note.text
-        note.public = req.body.public ?? note.public
-        note.save()
-          .then(note => res.json(200).json(note))
-          .catch(error => {
-            console.log(error)
-            res.status(500).json({ msg: 'Error in Server' })
-          })
+      if (note) {
+        if (res.locals.user.role === 'admin' || note.author === res.locals.user._id) {
+          note.date = req.body.date ?? note.date
+          note.text = req.body.text ?? note.text
+          note.public = req.body.public ?? note.public
+          note.save()
+            .then(note => res.status(200).json(note))
+            .catch(error => {
+              console.log(error)
+              res.status(500).json({ msg: 'Error in Server' })
+            })
+        } else {
+          res.status(403).json({ msg: 'Access not allowed' })
+        }
       } else {
-        res.status(403).json({ msg: 'Access not allowed' })
+        res.status(404).json({ msg: 'Resource not found' })
       }
     })
     .catch(error => {
