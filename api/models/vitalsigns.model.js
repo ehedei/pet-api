@@ -1,4 +1,4 @@
-const mongoose = require.mongoose
+const mongoose = require('mongoose')
 
 exports.vitalSignsSchema = new mongoose.Schema({
   weight: Number,

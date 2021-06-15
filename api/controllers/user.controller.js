@@ -144,3 +144,4 @@ function duplicateUserWithoutPass(user) {
   delete newUser.password
   return newUser
 }
+
