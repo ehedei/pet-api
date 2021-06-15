@@ -8,8 +8,8 @@ const { getAllCases, createCase, getCasebyId, deleteCase, updateCase, getAllTest
 router.get('/', checkAuth, checkAdminOrVet, getAllCases)
 router.get('/:caseId', getCasebyId)
 
-router.get('/:caseId/tests', getAllTestInCase)
-router.post('/:caseId/tests',checkAuth, checkAdminOrVet, addTestInCase)
+router.get('/:caseId/tests', checkAuth, getAllTestInCase)
+router.post('/:caseId/tests', checkAuth, checkAdminOrVet, addTestInCase)
 
 
 router.put('/:caseId', checkAuth, checkAdminOrVet, updateCase)
