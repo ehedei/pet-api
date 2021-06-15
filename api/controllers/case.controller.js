@@ -70,7 +70,6 @@ exports.getAllTestInCase = (req, res) => {
 exports.addTestInCase = (req, res) => {
   CaseModel
     .findById(req.params.caseId)
-
     .then((cases) => {
       cases.tests.push(req.body.id)
       cases.save(function (err) {
