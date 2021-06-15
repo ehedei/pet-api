@@ -1,9 +1,10 @@
 const mongoose = require('mongoose')
 
-exports.treatmentSchema = new mongoose.Schema({
-  starDate: {
-    type: Date.now,
-    required: [true, 'Start Date is requierd']
+const treatmentSchema = new mongoose.Schema({
+  startDate: {
+    type: Date,
+    required: [true, 'Start Date is requierd'],
+    default: Date.now
   },
   endDate: {
     type: Date
@@ -20,3 +21,5 @@ exports.treatmentSchema = new mongoose.Schema({
     type: String
   }
 })
+
+exports.TreatmentModel = mongoose.model('treatment', treatmentSchema)

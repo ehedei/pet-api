@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
-const testSchema = new.mongoose.Schema({
+const testSchema = new mongoose.Schema({
   date : { 
-    type: date, 
+    type: Date, 
     required: [true, 'Date field is required']
   }, 
   type : { 
@@ -15,10 +15,10 @@ const testSchema = new.mongoose.Schema({
   }, 
   results: { type: String },
   observations: { type: String },
-  vet: [{
+  vet: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
-  }]
+  }
 })
 
 exports.TestModel = mongoose.model('test', testSchema)
