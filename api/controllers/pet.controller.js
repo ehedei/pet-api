@@ -162,12 +162,16 @@ exports.addCaseInPet = (req, res) => {
   PetModel
     .findById(req.params.petId)
     .then((pet) => {
-      pet.record.push(req.body.id)
-      pet.save(function (err) {
-        if (err) return err
-        res.json(pet)
-      })
-      res.status(200).json(pet)
+      if(pet){
+        pet.record.push(req.body.id)
+        pet.save(function (err) {
+          if (err) return err
+          res.json(pet)
+        })
+        res.status(200).json(pet)
+      } else {
+        res.status(404).json({ msg: 'Resource not found' })
+      }
     })
     .catch(error => {
       res.status(500).json({ msg: 'Error in Server' })
@@ -179,11 +183,17 @@ exports.viewVitalsPet = (req, res) => {
     .findById(req.params.petId)
     .populate('record')
     .then((rec) => {
-      const newArr = []
-      rec.record.forEach((v) => {
-        newArr.push(v.vitalSigns)
-      })
-      res.status(200).json(newArr)
+      if(rec){
+        const newArr = []
+        rec.record.forEach((v) => {
+          if(v.vitalSigns){
+            newArr.push(v.vitalSigns)
+          }
+        })
+          res.status(200).json(newArr)   
+      } else {
+        res.status(404).json({ msg: 'Resource not found' })
+      }
     })
     .catch(error => {
       res.status(500).json({ msg: 'Error in Server' })
@@ -199,7 +209,7 @@ exports.viewTestsPet = (req, res) => { // aqui me he quedado, necesito los test 
       rec.record.forEach((v) => {
         newArr.push(v.tests)
       })
-     res.status(200).json(newArr)
+     res.status(200).json(rec.record)
     })
     .catch(error => {
       res.status(500).json({ msg: 'Error in Server' })
