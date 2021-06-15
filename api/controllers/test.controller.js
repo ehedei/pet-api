@@ -11,7 +11,6 @@ exports.getAllTests = (req, res) => {
     })
 }
 
-
 exports.getTestById = (req, res) => {
   TestModel
     .findById(req.params.testId)
@@ -38,7 +37,7 @@ exports.createTest = (req, res) => {
 
 exports.updateTestById = (req, res) => {
   TestModel
-    .findByIdAndUpdate(req.params.testId, req.body, { new: true }) 
+    .findByIdAndUpdate(req.params.testId, req.body, { new: true })
     .then((test) => {
       res.status(200).json(test)
     })
