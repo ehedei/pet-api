@@ -113,14 +113,31 @@
 ## API Endpoints
 All the endpoints are preceeded by `/api`.
 
-
-
 - ### Auth
 
 |Verb|Route|Description|Auth.|Body Params|Returns|Notes|
 |-|-|-|-|-|-|-|
 |POST|**/auth/signup**|Register a new User in the App|-|**username**, **email**, **password**, firstName, lastName, phone, mobile, address: { **direction**, **city**, state, country}|User created|- Endpoint ignores unexpected fields, _pets_ and _role_<br>- _address_ is not required, but if it is filled, **_city_** and **_direction_** will be _required_|
 |POST|**/auth/login** |Log in with email and password|-|**email**, **password**|token, email, id|
+
+
+- ### Case
+
+|Verb|Route|Description|Auth.|Body Params|Returns|Notes|
+|-|-|-|-|-|-|-|
+|GET|**/cases** |Get a list of all Cases|Admin, Vet|-|List with all cases|
+|GET|**/cases/:caseId** |Get a Case registered in the app by id|Admin, Vet, User|-|Case|- A regular User can only get Cases from her pets|
+|POST|**/cases** |Register a new Case in the app|Admin, Vet|**date**, observations, **purpose**, diet, habitat, tests, treatments, **vet**, vitalSigns|New Case|
+|PUT|**/cases/:caseId** |Update a Case registered in the app by id|Admin, Vet|date, observations, purpose, diet, habitat, tests,treatments, vet, vitalSigns|Updated Case|
+|DELETE|**/cases/:caseId** |Delete a Case registered in the app by id|Admin|-|Deleted Case|
+|GET|**/cases/:caseId/tests** |Get a list of all Tests in a Case|Admin, Vet|-|List of Tests|
+|PUT|**/cases/:caseId/tests** |Add a Treatment into a Case |Admin, Vet|testId|Updated Case|
+|POST|**/cases/:caseId/tests** |Create a Test into a Case |Admin, Vet|**date**, **type**, description, results, observations, **vet**|Test created|
+|DELETE|**/cases/:caseId/tests/:testId** |Delete a Test from a Case |Admin, Vet|-|List of Tests inside Case|
+|POST|**/cases/:caseId/treatments** |Get the list of Treatments inside a Case by caseId |Admin, Vet|-|List of Treatments|
+|PUT|**/cases/:caseId/treatments** |Add a Treatment in a Case |Admin, Vet|treatmentId|Updated Case|
+|POST|**/cases/:caseId/treatments** |Create a Test into a Case |Admin, Vet|**startDate**, endDate, **type**, **description**, observation|Treatment created|
+|DELETE|**/cases/:caseId/treatments/:treatmentId** |Delete a Treatment from a Case |Admin, Vet|-|List of Treatments inside Case|
 
 ## 
 
