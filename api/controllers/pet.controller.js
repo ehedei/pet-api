@@ -80,7 +80,7 @@ exports.deletePet = (req, res) => {
     .findByIdAndDelete(req.params.petId)
     .then(pet => {
       if (pet) {
-        res.status(202).json(pet)
+        res.status(200).json(pet)
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }
@@ -335,7 +335,7 @@ exports.getTreatmentsPet = (req, res) => {
     })
 }
 
-exports.createCaseInPet = (req, res) => { 
+exports.createCaseInPet = (req, res) => {
   const cases = req.body
   const pet = req.params.petId
   PetModel

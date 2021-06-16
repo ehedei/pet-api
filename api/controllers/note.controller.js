@@ -53,7 +53,7 @@ exports.deleteNote = (req, res) => {
   NoteModel.findByIdAndDelete(req.params.noteId)
     .then(note => {
       if (note) {
-        res.status(202).json(note)
+        res.status(200).json(note)
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }

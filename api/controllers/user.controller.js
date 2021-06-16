@@ -65,7 +65,7 @@ exports.deleteUser = (req, res) => {
     .findByIdAndDelete(req.params.userId)
     .then(user => {
       const newUser = duplicateUserWithoutPass(user)
-      res.status(202).json(newUser)
+      res.status(200).json(newUser)
     })
     .catch(error => {
       console.log(error)
