@@ -1,5 +1,5 @@
-const { checkAuth, checkAdminOrVet } = require('../../utils/auth')
-const { getAllPets, getPetById, savePet, updatePet, deletePet, deleteNoteFromPet, getNotesFromPet, addCaseInPet, getVitalsPet, getTestsPet, createNoteToPet, getAllCasePet, getTreatmentsPet } = require('../controllers/pet.controller')
+const { checkAuth, checkAdminOrVet, checkAdmin } = require('../../utils/auth')
+const { getAllPets, getPetById, savePet, updatePet, deletePet, deleteNoteFromPet, getNotesFromPet, addCaseInPet, getVitalsPet, getTestsPet, createNoteToPet, getAllCasePet, getTreatmentsPet, createCaseInPet } = require('../controllers/pet.controller')
 
 const router = require('express').Router()
 
@@ -13,6 +13,7 @@ router.post('/:petId/notes', checkAuth, createNoteToPet)
 
 router.put('/:petId/cases', checkAuth, checkAdminOrVet, addCaseInPet)
 router.get('/:petId/cases', checkAuth, checkAdminOrVet, getAllCasePet)
+router.post('/:petId/cases', checkAuth, checkAdmin, createCaseInPet)
 
 router.get('/:petId/treatments', checkAuth, checkAdminOrVet, getTreatmentsPet)
 

@@ -1,5 +1,6 @@
 const { NoteModel } = require('../models/note.model')
 const { PetModel } = require('../models/pet.model')
+const { CaseModel } = require('../models/case.model')
 
 exports.getAllPets = (req, res) => {
   PetModel
@@ -182,6 +183,7 @@ exports.deleteNoteFromPet = (req, res) => {
       let note
       if (pet && (note = pet.notes.find(note => note._id.toString() === req.params.noteId))) {
         if (res.locals.user.role === 'admin' || note.author.toString() === res.locals.user._id.toString()) {
+          pet.notes = pet.notes.filter(note => note._id.toString() !== req.params.noteId)
           note.remove()
           pet.save()
             .then(pet => {
@@ -201,7 +203,7 @@ exports.deleteNoteFromPet = (req, res) => {
     })
 }
 
-function preparePet (body) {
+function preparePet(body) {
   const pet = {
     name: body.name ?? this.name,
     birthdate: body.birthdate ?? this.birthdate,
@@ -221,9 +223,9 @@ exports.addCaseInPet = (req, res) => {
     .findById(req.params.petId)
     .then((pet) => {
       if (pet) {
-        const cases = pet.record.find(c => c._id.toString() === req.body.petId)
+        const cases = pet.record.find(c => c._id.toString() === req.body.caseId)
         if (!cases) {
-          pet.record.push(req.body.petId)
+          pet.record.push(req.body.caseId)
           pet.save(function (err) {
             if (err) {
               res.status(500).json({ msg: 'Error in Server' })
@@ -313,7 +315,7 @@ exports.getAllCasePet = (req, res) => {
     })
 }
 
-exports.getTreatmentsPet = (req, res) => { // aquiii
+exports.getTreatmentsPet = (req, res) => {
   PetModel
     .findById(req.params.petId)
     .populate({
@@ -337,6 +339,40 @@ exports.getTreatmentsPet = (req, res) => { // aquiii
       }
     })
     .catch((error) => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.createCaseInPet = (req, res) => { 
+  const cases = req.body
+  const pet = req.params.petId
+  PetModel
+    .findById(pet)
+    .populate('record')
+    .then(pet => {
+      if (pet) {
+        CaseModel
+          .create(cases)
+          .then(newCase => {
+            pet.record.push(newCase)
+            pet.save(function (err) {
+              if (err) {
+                res.status(500).json({ msg: 'Error in Server' })
+              } else {
+                res.status(200).json(newCase)
+              }
+            })
+          })
+          .catch(error => {
+            console.log(error)
+            res.status(500).json({ msg: 'Error in Server' })
+          })
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
+      }
+    })
+    .catch(error => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })

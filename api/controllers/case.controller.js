@@ -1,4 +1,6 @@
 const { CaseModel } = require('../models/case.model')
+const { TreatmentModel } = require('../models/treatment.Model.js')
+const { TestModel } = require('../models/test.model')
 
 exports.getAllCases = (req, res) => {
   CaseModel
@@ -20,11 +22,7 @@ exports.createCase = (req, res) => {
   CaseModel
     .create(req.body)
     .then((cases) => {
-      if (cases) {
-        res.status(200).json(cases)
-      } else {
-        res.status(404).json({ msg: 'Resource not found' })
-      }
+      res.status(200).json(cases)
     })
     .catch(error => {
       console.log(error)
@@ -162,6 +160,119 @@ exports.getTreatmentsInCase = (req, res) => {
         res.status(200).json(cases.treatments)
       } else {
         res.status(404).json({ msg: 'Resource not found' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.createTreatmentInCase = (req, res) => {
+  const treatments = req.body
+
+  CaseModel
+    .findById(req.params.caseId)
+    .populate('treatment')
+    .then(cases => {
+      if (cases) {
+        TreatmentModel
+          .create(treatments)
+          .then(newTreat => {
+            cases.treatments.push(newTreat)
+            cases.save(function (err) {
+              if (err) {
+                res.status(500).json({ msg: 'Error in Server' })
+              } else {
+                res.status(200).json(newTreat)
+              }
+            })
+          })
+          .catch(error => {
+            console.log(error)
+            res.status(500).json({ msg: 'Error in Server' })
+          })
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.createTestInCase = (req, res) => {
+  const test = req.body
+  CaseModel
+    .findById(req.params.caseId)
+    .populate('test')
+    .then((cases) => {
+      if (cases) {
+        TestModel
+          .create(test)
+          .then(newTest => {
+            cases.tests.push(newTest)
+            cases.save(function (err) {
+              if (err) {
+                res.status(500).json({ msg: 'Error in Server' })
+              } else {
+                res.status(200).json(newTest)
+              }
+            })
+          })
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.deleteTreatmentCase = (req, res) => {
+  CaseModel
+    .findById(req.params.caseId)
+    .populate('treatments')
+    .then(cases => {
+      let treatment
+      if (cases && (treatment = cases.treatments.find(c => c._id.toString() === req.params.treatmentId))) {
+        cases.treatments = cases.treatments.filter(c => c._id.toString() !== req.params.treatmentId)
+        treatment.remove()
+        cases.save()
+          .then(cases => res.status(200).json(cases))
+          .catch(error => {
+            console.log(error)
+            res.status(500).json({ msg: 'Error in Server' })
+          })
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.deleteTestCase = (req, res) => {
+  CaseModel
+    .findById(req.params.caseId)
+    .populate('tests')
+    .then(cases => {
+      let test
+      if (cases && (test = cases.tests.find(t => t._id.toString() === req.params.testId))) {
+        cases.tests = cases.tests.filter(t => t._id.toString() !== req.params.testId)
+        test.remove()
+        cases.save()
+          .then(cases => res.status(200).json(cases))
+          .catch(error => {
+            console.log(error)
+            res.status(500).json({ msg: 'Error in Server' })
+          })
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
       }
     })
     .catch(error => {

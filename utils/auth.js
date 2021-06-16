@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const { UserModel } = require('../api/models/user.model')
 
 exports.checkAuth = (req, res, next) => {
-  console.log(req.headers.token)
+  // console.log(req.headers.token)
   jwt.verify(req.headers.token, process.env.TOKEN_SECRET, (err, token) => {
     if (err) {
       res.status(403).json({ msg: 'Token not valid' })

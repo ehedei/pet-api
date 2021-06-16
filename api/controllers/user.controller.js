@@ -93,7 +93,7 @@ exports.updateProfile = (req, res) => {
   }
 }
 
-exports.addPetToUser = (req, res) => {
+exports.createPetIntoUser = (req, res) => {
   const user = res.locals.user
   const pet = req.body
   if (pet.notes || pet.cases) {
@@ -118,7 +118,7 @@ exports.addPetToUser = (req, res) => {
   }
 }
 
-function makeUpdateProfile(req, res) {
+function makeUpdateProfile (req, res) {
   const user = res.locals.user
   setUpdatesInUser(user, req.body)
   user
@@ -133,7 +133,7 @@ function makeUpdateProfile(req, res) {
     })
 }
 
-function prepareUserUpdates(req, res) {
+function prepareUserUpdates (req, res) {
   UserModel
     .findById(req.params.userId)
     .then(user => {
@@ -154,7 +154,7 @@ function prepareUserUpdates(req, res) {
     })
 }
 
-function setUpdatesInUser(user, updates) {
+function setUpdatesInUser (user, updates) {
   for (const property in updates) {
     if (typeof updates[property] === 'object') {
       setUpdatesInUser(user[property], updates[property])
@@ -164,9 +164,36 @@ function setUpdatesInUser(user, updates) {
   }
 }
 
-function duplicateUserWithoutPass(user) {
+function duplicateUserWithoutPass (user) {
   const newUser = JSON.parse(JSON.stringify(user))
   delete newUser.password
   return newUser
 }
 
+exports.addPetInUser = (req, res) => {
+  UserModel
+    .findById(req.params.userId)
+    .then(user => {
+      if (user) {
+        const pets = user.pets.find(p => p._id.toString() === req.body.petId)
+        if (!pets) {
+          user.pets.push(req.body.petId)
+          user.save(function (err) {
+            if (err) {
+              res.status(500).json({ msg: 'Error in Server' })
+            } else {
+              res.status(200).json(duplicateUserWithoutPass(user))
+            }
+          })
+        } else {
+          res.status(409).json({ msg: 'Resource already exists' })
+        }
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
