@@ -113,11 +113,14 @@
 ## API Endpoints
 All the endpoints are preceeded by `/api`.
 
+
+
 - ### Auth
-|Verb|Route|Description|Auth.
-|-|-|-|-|
-|POST|**/auth/login** |Log in with email and password|-|
-|POST|**/auth/signup**|Register a new User in the App|-|
+
+|Verb|Route|Description|Auth.|Body Params|Returns|Notes|
+|-|-|-|-|-|-|-|
+|POST|**/auth/signup**|Register a new User in the App|-|**username**, **email**, **password**, firstName, lastName, phone, mobile, address: { **direction**, **city**, state, country}|User created|- Endpoint ignores unexpected fields, _pets_ and _role_<br>- _address_ is not required, but if it is filled, **_city_** and **_direction_** will be _required_|
+|POST|**/auth/login** |Log in with email and password|-|**email**, **password**|token, email, id|
 
 ## 
 
