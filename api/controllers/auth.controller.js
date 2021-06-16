@@ -59,6 +59,7 @@ exports.signup = (req, res) => {
 function fillUserData (req) {
   const userData = req.body
   delete userData.role
+  delete userData.pets
   return userData
 }
 

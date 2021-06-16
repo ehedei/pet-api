@@ -7,6 +7,6 @@ router.get('/', checkAuth, checkAdmin, getAllNotes)
 router.get('/:noteId', checkAuth, getNoteById)
 router.post('/', checkAuth, saveNote)
 router.put('/:noteId', checkAuth, updateNote)
-router.delete('/:noteId', checkAuth, checkAdmin, deleteNote)
+router.delete('/:noteId', checkAuth, deleteNote)
 
 exports.noteRouter = router
