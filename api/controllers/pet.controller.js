@@ -335,6 +335,40 @@ exports.getTreatmentsPet = (req, res) => {
     })
 }
 
+exports.createCaseInPet = (req, res) => { 
+  const cases = req.body
+  const pet = req.params.petId
+  PetModel
+    .findById(pet)
+    .populate('record')
+    .then(pet => {
+      if (pet) {
+        CaseModel
+          .create(cases)
+          .then(newCase => {
+            pet.record.push(newCase)
+            pet.save(function (err) {
+              if (err) {
+                res.status(500).json({ msg: 'Error in Server' })
+              } else {
+                res.status(200).json(newCase)
+              }
+            })
+          })
+          .catch(error => {
+            console.log(error)
+            res.status(500).json({ msg: 'Error in Server' })
+          })
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
 function preparePet (body) {
   const pet = {
     name: body.name ?? this.name,

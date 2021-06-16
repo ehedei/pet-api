@@ -169,3 +169,31 @@ function duplicateUserWithoutPass (user) {
   delete newUser.password
   return newUser
 }
+
+exports.addPetInUser = (req, res) => {
+  UserModel
+    .findById(req.params.userId)
+    .then(user => {
+      if (user) {
+        const pets = user.pets.find(p => p._id.toString() === req.body.petId)
+        if (!pets) {
+          user.pets.push(req.body.petId)
+          user.save(function (err) {
+            if (err) {
+              res.status(500).json({ msg: 'Error in Server' })
+            } else {
+              res.status(200).json(duplicateUserWithoutPass(user))
+            }
+          })
+        } else {
+          res.status(409).json({ msg: 'Resource already exists' })
+        }
+      } else {
+        res.status(404).json({ msg: 'Resource does not exist' })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
