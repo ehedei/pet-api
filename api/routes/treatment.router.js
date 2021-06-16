@@ -10,7 +10,7 @@ const router = require('express').Router()
 router.get('/', checkAuth, checkAdminOrVet, getAllTreatments)
 router.post('/', checkAuth, checkAdminOrVet, createTreatment)
 router.get('/:treatmentId', checkAuth, checkAdminOrVet, getTreatmentById)
-router.delete('/:treatmentId', checkAuth, checkAdminOrVet, deleteTreatment)
+router.delete('/:treatmentId', checkAuth, checkAdmin, deleteTreatment)
 router.put('/:treatmentId', checkAuth, checkAdminOrVet, updateTreatment)
 
 exports.treatmentRouter = router

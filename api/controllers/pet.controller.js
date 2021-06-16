@@ -201,7 +201,7 @@ exports.deleteNoteFromPet = (req, res) => {
     })
 }
 
-function preparePet(body) {
+function preparePet (body) {
   const pet = {
     name: body.name ?? this.name,
     birthdate: body.birthdate ?? this.birthdate,
@@ -221,19 +221,25 @@ exports.addCaseInPet = (req, res) => {
     .findById(req.params.petId)
     .then((pet) => {
       if (pet) {
-        pet.record.push(req.body.id)
-        pet.save(function (err) {
-          if (err) {
-            res.status(500).json({ msg: 'Error in Server' })
-          } else {
-            res.status(200).json(pet)
-          }
-        })
+        const cases = pet.record.find(c => c._id.toString() === req.body.petId)
+        if (!cases) {
+          pet.record.push(req.body.petId)
+          pet.save(function (err) {
+            if (err) {
+              res.status(500).json({ msg: 'Error in Server' })
+            } else {
+              res.status(200).json(pet)
+            }
+          })
+        } else {
+          res.status(409).json({ msg: 'Resource already exists' })
+        }
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }
     })
     .catch(error => {
+      console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
 }
@@ -242,20 +248,25 @@ exports.getVitalsPet = (req, res) => {
   PetModel
     .findById(req.params.petId)
     .populate('record')
-    .then((rec) => {
-      if (rec) {
-        const newArr = []
-        rec.record.forEach((v) => {
-          if (v.vitalSigns) {
-            newArr.push(v.vitalSigns)
-          }
-        })
-        res.status(200).json(newArr)
+    .then((pet) => {
+      if (pet) {
+        if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
+          const newArr = []
+          pet.record.forEach((rec) => {
+            if (rec.vitalSigns) {
+              newArr.push(rec.vitalSigns)
+            }
+          })
+          res.status(200).json(newArr)
+        } else {
+          res.status(403).json({ msg: 'Access not allowed' })
+        }
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }
     })
     .catch(error => {
+      console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
 }
@@ -272,14 +283,61 @@ exports.getTestsPet = (req, res) => {
     })
     .then((pet) => {
       if (pet) {
-        const tests = []
-        pet.record.forEach(el => tests.push(...el.tests))
-        res.status(200).json(tests)
+        if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
+          const tests = []
+          pet.record.forEach(el => tests.push(...el.tests))
+          res.status(200).json(tests)
+        } else {
+          res.status(403).json({ msg: 'Access not allowed' })
+        }
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }
     })
-    .catch(error => {
+    .catch((error) => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.getAllCasePet = (req, res) => {
+  PetModel
+    .findById(req.params.petId)
+    .populate('record')
+    .then(pet => {
+      res.status(200).json(pet.record)
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    })
+}
+
+exports.getTreatmentsPet = (req, res) => { // aquiii
+  PetModel
+    .findById(req.params.petId)
+    .populate({
+      path: 'record',
+      populate: {
+        path: 'treatments',
+        model: 'treatment'
+      }
+    })
+    .then(pet => {
+      if (pet) {
+        if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
+          const treatments = []
+          pet.record.forEach(elem => treatments.push(...elem.treatments))
+          res.status(200).json(treatments)
+        } else {
+          res.status(403).json({ msg: 'Access not allowed' })
+        }
+      } else {
+        res.status(404).json({ msg: 'Resource not found' })
+      }
+    })
+    .catch((error) => {
+      console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
 }
