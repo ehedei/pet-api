@@ -209,7 +209,6 @@ exports.deleteNoteFromPet = (req, res) => {
     })
 }
 
-<<<<<<< HEAD
 function preparePet(body) {
   const pet = {
     name: body.name ?? this.name,
@@ -225,8 +224,6 @@ function preparePet(body) {
   return pet
 }
 
-=======
->>>>>>> 496c4599c028a2ab5d79933c160f6a814fe714b3
 exports.addCaseInPet = (req, res) => {
   PetModel
     .findById(req.params.petId)
@@ -353,7 +350,6 @@ exports.getTreatmentsPet = (req, res) => {
     })
 }
 
-<<<<<<< HEAD
 exports.createCaseInPet = (req, res) => { 
   const cases = req.body
   const pet = req.params.petId
@@ -386,19 +382,4 @@ exports.createCaseInPet = (req, res) => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
-=======
-function preparePet (body) {
-  const pet = {
-    name: body.name ?? this.name,
-    birthdate: body.birthdate ?? this.birthdate,
-    species: body.species ?? this.species,
-    breed: body.breed ?? this.breed,
-    genre: body.genre ?? this.genre,
-    alive: body.alive ?? this.alive,
-    description: body.description ?? this.description,
-    alergies: body.alergies ?? this.alergies
-  }
-
-  return pet
->>>>>>> 496c4599c028a2ab5d79933c160f6a814fe714b3
 }
