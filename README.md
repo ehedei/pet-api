@@ -139,6 +139,16 @@ All the endpoints are preceeded by `/api`.
 |POST|**/cases/:caseId/treatments** |Create a Test into a Case |Admin, Vet|**startDate**, endDate, **type**, **description**, observation|Treatment created|
 |DELETE|**/cases/:caseId/treatments/:treatmentId** |Delete a Treatment from a Case |Admin, Vet|-|List of Treatments inside Case|
 
+- ### Notes
+
+|Verb|Route|Description|Auth.|Body Params|Returns|Notes|
+|-|-|-|-|-|-|-|
+|GET|**/notes** |Get a list of all Notes|Admin|-|List with all Notes|
+|GET|**/notes/noteId** |Get a Note by Id|Admin, Vet, User|-|Note|**_\*Note must be owned by the User (except Admin)_**|
+|POST|**/notes** |Create a Note|Admin|**date**, **text**, **public**, **author**|Created Note|
+|PUT|**/notes/noteId** |Update a note|Admin, Vet, User|date, text, public|Updated Note|**_\*Note must be owned by the User (except Admin)_**|
+|DELETE|**/notes/:noteId** |Delete a Note by Id|Admin|-|Deleted Note|
+
 ## 
 
 ## Team
