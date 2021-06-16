@@ -18,7 +18,13 @@ exports.getPetById = (req, res) => {
     .findById(req.params.petId)
     .then(pet => {
       if (pet) {
-        res.status(200).json(pet)
+        if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
+          pet = JSON.parse(JSON.stringify(pet))
+          delete pet.notes
+          res.status(200).json(pet)
+        } else {
+          res.status(403).json({ msg: 'Access not allowed' })
+        }
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }
@@ -201,21 +207,6 @@ exports.deleteNoteFromPet = (req, res) => {
     })
 }
 
-function preparePet (body) {
-  const pet = {
-    name: body.name ?? this.name,
-    birthdate: body.birthdate ?? this.birthdate,
-    species: body.species ?? this.species,
-    breed: body.breed ?? this.breed,
-    genre: body.genre ?? this.genre,
-    alive: body.alive ?? this.alive,
-    description: body.description ?? this.description,
-    alergies: body.alergies ?? this.alergies
-  }
-
-  return pet
-}
-
 exports.addCaseInPet = (req, res) => {
   PetModel
     .findById(req.params.petId)
@@ -340,4 +331,19 @@ exports.getTreatmentsPet = (req, res) => { // aquiii
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
+}
+
+function preparePet (body) {
+  const pet = {
+    name: body.name ?? this.name,
+    birthdate: body.birthdate ?? this.birthdate,
+    species: body.species ?? this.species,
+    breed: body.breed ?? this.breed,
+    genre: body.genre ?? this.genre,
+    alive: body.alive ?? this.alive,
+    description: body.description ?? this.description,
+    alergies: body.alergies ?? this.alergies
+  }
+
+  return pet
 }

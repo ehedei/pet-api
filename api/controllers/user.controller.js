@@ -118,7 +118,7 @@ exports.addPetToUser = (req, res) => {
   }
 }
 
-function makeUpdateProfile(req, res) {
+function makeUpdateProfile (req, res) {
   const user = res.locals.user
   setUpdatesInUser(user, req.body)
   user
@@ -133,7 +133,7 @@ function makeUpdateProfile(req, res) {
     })
 }
 
-function prepareUserUpdates(req, res) {
+function prepareUserUpdates (req, res) {
   UserModel
     .findById(req.params.userId)
     .then(user => {
@@ -154,7 +154,7 @@ function prepareUserUpdates(req, res) {
     })
 }
 
-function setUpdatesInUser(user, updates) {
+function setUpdatesInUser (user, updates) {
   for (const property in updates) {
     if (typeof updates[property] === 'object') {
       setUpdatesInUser(user[property], updates[property])
@@ -164,9 +164,8 @@ function setUpdatesInUser(user, updates) {
   }
 }
 
-function duplicateUserWithoutPass(user) {
+function duplicateUserWithoutPass (user) {
   const newUser = JSON.parse(JSON.stringify(user))
   delete newUser.password
   return newUser
 }
-
