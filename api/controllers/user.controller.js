@@ -169,6 +169,7 @@ function duplicateUserWithoutPass (user) {
   delete newUser.password
   return newUser
 }
+<<<<<<< HEAD
 
 exports.addPetInUser = (req, res) => {
   UserModel
@@ -197,3 +198,5 @@ exports.addPetInUser = (req, res) => {
       res.status(500).json({ msg: 'Error in Server' })
     })
 }
+=======
+>>>>>>> 496c4599c028a2ab5d79933c160f6a814fe714b3
