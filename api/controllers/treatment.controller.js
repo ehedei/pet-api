@@ -2,7 +2,7 @@ const { TreatmentModel } = require('../models/treatment.Model.js')
 
 exports.getAllTreatments = (req, res) => {
   TreatmentModel
-    .find()
+    .find(prepareQuery(req.query))
     .then(treatments => {
       res.status(200).json(treatments)
     })
@@ -59,7 +59,7 @@ exports.updateTreatment = (req, res) => {
 
 exports.deleteTreatment = (req, res) => {
   TreatmentModel
-    .findByIdAndDelete(req.params.treatmentId,)
+    .findByIdAndDelete(req.params.treatmentId)
     .then((result) => {
       if (result) {
         res.status(200).json(result)
@@ -71,4 +71,14 @@ exports.deleteTreatment = (req, res) => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+
+  if (query.hasOwnProperty('startDate')) resultQuery.startDate = query.startDate
+
+  if (query.hasOwnProperty('date')) resultQuery.type = query.type
+
+  return resultQuery
 }

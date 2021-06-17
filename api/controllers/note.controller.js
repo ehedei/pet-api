@@ -2,7 +2,7 @@ const { NoteModel } = require('../models/note.model')
 
 exports.getAllNotes = (req, res) => {
   NoteModel
-    .find()
+    .find(prepareQuery(req.query))
     .then(notes => {
       res.status(200).json(notes)
     })
@@ -89,4 +89,16 @@ exports.updateNote = (req, res) => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+
+  if (query.hasOwnProperty('author')) resultQuery.author = query.author
+
+  if (query.hasOwnProperty('date')) resultQuery.date = query.date
+
+  if (query.hasOwnProperty('public')) resultQuery.public = query.public
+
+  return resultQuery
 }

@@ -4,7 +4,7 @@ const { CaseModel } = require('../models/case.model')
 
 exports.getAllPets = (req, res) => {
   PetModel
-    .find()
+    .find(prepareQuery(req.query))
     .then(pets => {
       res.status(200).json(pets)
     })
@@ -335,7 +335,7 @@ exports.getTreatmentsPet = (req, res) => {
     })
 }
 
-exports.createCaseInPet = (req, res) => { 
+exports.createCaseInPet = (req, res) => {
   const cases = req.body
   const pet = req.params.petId
   PetModel
@@ -382,4 +382,19 @@ function preparePet (body) {
   }
 
   return pet
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+  if (query.hasOwnProperty('name')) resultQuery.name = query.name
+
+  if (query.hasOwnProperty('birthdate')) resultQuery.birthdate = query.birthdate
+
+  if (query.hasOwnProperty('species')) resultQuery.species = query.species
+
+  if (query.hasOwnProperty('genre')) resultQuery.genre = query.genre
+
+  if (query.hasOwnProperty('status')) resultQuery.status = query.status
+
+  return resultQuery
 }
