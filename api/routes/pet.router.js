@@ -21,5 +21,6 @@ router.put('/:petId/notes', checkAuth, checkAdmin, addNoteToPet)
 
 router.delete('/:petId', checkAuth, checkAdmin, deletePet)
 router.delete('/:petId/notes/:noteId', checkAuth, deleteNoteFromPet)
+// router.delete('/:petId/cases/:caseId', checkAuth, checkAdmin, deleteCaseFromPet)
 
 exports.petRouter = router

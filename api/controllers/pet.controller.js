@@ -1,6 +1,8 @@
 const { NoteModel } = require('../models/note.model')
 const { PetModel } = require('../models/pet.model')
 const { CaseModel } = require('../models/case.model')
+const { TestModel } = require('../models/test.model')
+const { TreatmentModel } = require('../models/treatment.Model')
 
 exports.getAllPets = (req, res) => {
   PetModel
@@ -311,11 +313,43 @@ exports.getTreatmentsPet = (req, res) => {
     })
 }
 
+exports.deleteCaseFromPet = async (req, res) => {
+  try {
+    const pet = await PetModel.findById(req.params.petId).populate('record')
+    const cases = pet.record.find(c => c._id.toString() === req.params.caseId)
+
+    if (pet && cases) {
+      pet.record = pet.record.filter(c => c._id.toString() !== req.params.caseId)
+      await pet.save()
+
+      await TestModel.remove({
+        _id: {
+          $in: cases.tests
+        }
+      })
+
+      await TreatmentModel.remove({
+        _id: {
+          $in: cases.treatments
+        }
+      })
+
+      await cases.remove()
+      res.status(200).json(pet.record)
+    } else {
+      res.status(404).json({ msg: 'Resource not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
+}
+
 exports.createCaseInPet = async (req, res) => {
   const cases = req.body
   const petId = req.params.petId
   try {
-    const pet = PetModel.findById(petId).populate('record')
+    const pet = await PetModel.findById(petId).populate('record')
     if (pet) {
       const newCase = await CaseModel.create(cases)
       pet.record.push(newCase)
