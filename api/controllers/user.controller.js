@@ -204,9 +204,9 @@ function prepareQuery (query) {
 
   if (query.hasOwnProperty('email')) resultQuery.email = query.email
 
-  if (query.hasOwnProperty('firstName')) resultQuery.firstName = query.firstName
+  if (query.hasOwnProperty('firstname')) resultQuery.firstName = query.firstName
 
-  if (query.hasOwnProperty('lastName')) resultQuery.lastName = query.lastName
+  if (query.hasOwnProperty('lastname')) resultQuery.lastName = query.lastName
 
   if (query.hasOwnProperty('phone')) resultQuery.phone = query.phone
 

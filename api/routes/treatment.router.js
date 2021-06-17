@@ -8,9 +8,12 @@ const { deleteTreatment } = require('../controllers/treatment.controller')
 const router = require('express').Router()
 
 router.get('/', checkAuth, checkAdminOrVet, getAllTreatments)
-router.post('/', checkAuth, checkAdminOrVet, createTreatment)
 router.get('/:treatmentId', checkAuth, checkAdminOrVet, getTreatmentById)
-router.delete('/:treatmentId', checkAuth, checkAdmin, deleteTreatment)
+
+router.post('/', checkAuth, checkAdminOrVet, createTreatment)
+
 router.put('/:treatmentId', checkAuth, checkAdminOrVet, updateTreatment)
+
+router.delete('/:treatmentId', checkAuth, checkAdmin, deleteTreatment)
 
 exports.treatmentRouter = router

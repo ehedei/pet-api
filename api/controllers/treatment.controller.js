@@ -76,9 +76,9 @@ exports.deleteTreatment = (req, res) => {
 function prepareQuery (query) {
   const resultQuery = {}
 
-  if (query.hasOwnProperty('startDate')) resultQuery.startDate = query.startDate
+  if (query.hasOwnProperty('startdate')) resultQuery.startDate = query.startDate
 
-  if (query.hasOwnProperty('date')) resultQuery.type = query.type
+  if (query.hasOwnProperty('type')) resultQuery.type = query.type
 
   return resultQuery
 }
