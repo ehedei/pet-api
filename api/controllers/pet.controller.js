@@ -48,7 +48,7 @@ exports.savePet = (req, res) => {
     })
 }
 
-exports.updatePet = (req, res) => {
+exports.updatePet = async (req, res) => {
   if (req.body.notes || req.body.record) {
     res.status(409).json({ msg: 'Something in the request is not correct' })
   } else {
@@ -58,20 +58,17 @@ exports.updatePet = (req, res) => {
         delete pet[prop]
       }
     }
-
-    PetModel
-      .findByIdAndUpdate(req.params.petId, pet, { new: true })
-      .then(pet => {
-        if (pet) {
-          res.status(200).json(pet)
-        } else {
-          res.status(404).json({ msg: 'Resource not found' })
-        }
-      })
-      .catch(error => {
-        console.log(error)
-        res.status(500).json({ msg: 'Error in Server' })
-      })
+    try {
+      const updatedPet = await PetModel.findByIdAndUpdate(req.params.petId, pet, { new: true })
+      if (updatedPet) {
+        res.status(200).json(updatedPet)
+      } else {
+        res.status(404).json({ msg: 'Resource not found' })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ msg: 'Error in Server' })
+    }
   }
 }
 
@@ -114,127 +111,87 @@ exports.getNotesFromPet = (req, res) => {
     })
 }
 
-exports.addNoteToPet = (req, res) => {
-  PetModel
-    .findById(req.params.petId)
-    .then(pet => {
-      if (pet) {
-        if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
-          pet.notes.push(req.body.noteId)
-          pet.save()
-            .then(pet => {
-              res.status(200).json(pet.notes)
-            })
-            .catch()
-        } else {
-          res.status(403).json({ msg: 'Access not allowed' })
-        }
-      } else {
-        res.status(404).json({ msg: 'Resource not found' })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
-}
-
-exports.createNoteToPet = (req, res) => {
-  const note = {
-    date: req.body.date,
-    author: res.locals.user._id,
-    text: req.body.text,
-    public: req.body.public
+exports.addNoteToPet = async (req, res) => {
+  try {
+    const pet = await PetModel.findById(req.params.petId)
+    if (pet) {
+      pet.notes.push(req.body.noteId)
+      await pet.save()
+      res.status(200).json(pet.notes)
+    } else {
+      res.status(404).json({ msg: 'Resource not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
   }
-
-  PetModel
-    .findById(req.params.petId)
-    .then(pet => {
-      if (pet) {
-        if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
-          NoteModel
-            .create(note)
-            .then(newNote => {
-              pet.notes.push(newNote._id)
-              pet
-                .save()
-                .then(pet => res.status(201).json(newNote))
-                .catch(error => {
-                  console.log(error)
-                  res.status(500).json({ msg: 'Error in Server' })
-                })
-            })
-            .catch(error => {
-              console.log(error)
-              res.status(500).json({ msg: 'Error in Server' })
-            })
-        } else {
-          res.status(403).json({ msg: 'Access not allowed' })
-        }
-      } else {
-        res.status(404).json({ msg: 'Resource not found' })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
 }
 
-exports.deleteNoteFromPet = (req, res) => {
-  PetModel
-    .findById(req.params.petId)
-    .populate('notes')
-    .then(pet => {
-      let note
-      if (pet && (note = pet.notes.find(note => note._id.toString() === req.params.noteId))) {
-        if (res.locals.user.role === 'admin' || note.author.toString() === res.locals.user._id.toString()) {
-          pet.notes = pet.notes.filter(note => note._id.toString() !== req.params.noteId)
-          note.remove()
-          pet.save()
-            .then(pet => {
-              const notes = pet.notes.filter(note => note.author === res.locals.user._id.toString())
-              res.status(202).json(notes)
-            })
-        } else {
-          res.status(403).json({ msg: 'Access not allowed' })
-        }
+exports.createNoteToPet = async (req, res) => {
+  const note = prepareNote(req, res)
+
+  try {
+    const pet = await PetModel.findById(req.params.petId)
+    if (pet) {
+      if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
+        const newNote = await NoteModel.create(note)
+        pet.notes.push(newNote._id)
+        await pet.save()
+        res.status(201).json(newNote)
       } else {
-        res.status(404).json({ msg: 'Resource not found' })
+        res.status(403).json({ msg: 'Access not allowed' })
       }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+    } else {
+      res.status(404).json({ msg: 'Resource not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
-exports.addCaseInPet = (req, res) => {
-  PetModel
-    .findById(req.params.petId)
-    .then((pet) => {
-      if (pet) {
-        const cases = pet.record.find(c => c._id.toString() === req.body.caseId)
-        if (!cases) {
-          pet.record.push(req.body.caseId)
-          pet.save(function (err) {
-            if (err) {
-              res.status(500).json({ msg: 'Error in Server' })
-            } else {
-              res.status(200).json(pet)
-            }
-          })
-        } else {
-          res.status(409).json({ msg: 'Resource already exists' })
-        }
+exports.deleteNoteFromPet = async (req, res) => {
+  try {
+    const pet = await PetModel.findById(req.params.petId).populate('notes')
+    let note
+    if (pet && (note = pet.notes.find(note => note._id.toString() === req.params.noteId))) {
+      if (res.locals.user.role === 'admin' || note.author.toString() === res.locals.user._id.toString()) {
+        pet.notes = pet.notes.filter(note => note._id.toString() !== req.params.noteId)
+        await note.remove()
+        await pet.save()
+        const notes = pet.notes.filter(note => note.author === res.locals.user._id.toString())
+        res.status(202).json(notes)
       } else {
-        res.status(404).json({ msg: 'Resource not found' })
+        res.status(403).json({ msg: 'Access not allowed' })
       }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+    } else {
+      res.status(404).json({ msg: 'Resource not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
+}
+
+exports.addCaseInPet = async (req, res) => {
+  try {
+    const pet = await PetModel.findById(req.params.petId)
+    if (pet) {
+      const cases = pet.record.find(c => c._id.toString() === req.body.caseId)
+      if (!cases) {
+        pet.record.push(req.body.caseId)
+        await pet.save()
+        res.status(200).json(pet)
+      } else {
+        res.status(409).json({ msg: 'Resource already exists' })
+      }
+    } else {
+      res.status(404).json({ msg: 'Resource not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
 exports.getVitalsPet = (req, res) => {
@@ -352,41 +309,26 @@ exports.getTreatmentsPet = (req, res) => {
     })
 }
 
-exports.createCaseInPet = (req, res) => {
+exports.createCaseInPet = async (req, res) => {
   const cases = req.body
-  const pet = req.params.petId
-  PetModel
-    .findById(pet)
-    .populate('record')
-    .then(pet => {
-      if (pet) {
-        CaseModel
-          .create(cases)
-          .then(newCase => {
-            pet.record.push(newCase)
-            pet.save(function (err) {
-              if (err) {
-                res.status(500).json({ msg: 'Error in Server' })
-              } else {
-                res.status(200).json(newCase)
-              }
-            })
-          })
-          .catch(error => {
-            console.log(error)
-            res.status(500).json({ msg: 'Error in Server' })
-          })
-      } else {
-        res.status(404).json({ msg: 'Resource does not exist' })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+  const petId = req.params.petId
+  try {
+    const pet = PetModel.findById(petId).populate('record')
+    if (pet) {
+      const newCase = await CaseModel.create(cases)
+      pet.record.push(newCase)
+      await pet.save()
+      res.status(200).json(newCase)
+    } else {
+      res.status(404).json({ msg: 'Resource does not exist' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
-function preparePet (body) {
+function preparePet(body) {
   const pet = {
     name: body.name ?? this.name,
     birthdate: body.birthdate ?? this.birthdate,
@@ -401,7 +343,7 @@ function preparePet (body) {
   return pet
 }
 
-function prepareQuery (query) {
+function prepareQuery(query) {
   const resultQuery = {}
   if (query.hasOwnProperty('name')) resultQuery.name = query.name
 
@@ -418,4 +360,14 @@ function prepareQuery (query) {
   }
 
   return resultQuery
+}
+
+function prepareNote(req, res) {
+  const note = {
+    date: req.body.date,
+    author: res.locals.user._id,
+    text: req.body.text,
+    public: req.body.public
+  }
+  return note
 }

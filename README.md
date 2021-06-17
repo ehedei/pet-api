@@ -1,6 +1,6 @@
 # VetAPI
 ## Description
-This is our second project for the [Reboot Academy](https://reboot.academy) bootcamp, Pet API.  
+This is our second project for the [Reboot Academy](https://reboot.academy) bootcamp, Pet API.
 
 Our project is an API that takes care of the management of a veterinary clinic. The main idea was to solve the problem that many users have to deal with the reports and treatments of their pets, and also to help veterinary clinics in the management of their users, pets, treatments and tests.
 
@@ -132,7 +132,7 @@ All the endpoints are preceeded by `/api`.
 |POST|**/auth/signup**|Register a new User in the App|-|**username**, **email**, **password**, firstName, lastName, phone, mobile, address: { **direction**, **city**, state, country}|User created|- Endpoint ignores unexpected fields, _pets_ and _role_<br>- _address_ is not required, but if it is filled, **_city_** and **_direction_** will be _required_|
 |POST|**/auth/login** |Log in with email and password|-|**email**, **password**|token, email, id|
 
-## 
+##
 - ### Case
 
 |Verb|Route|Description|Auth.|Body Params|Returns|Notes|
@@ -150,7 +150,7 @@ All the endpoints are preceeded by `/api`.
 |PUT|**/cases/:caseId/treatments** |Add a Treatment in a Case |Admin, Vet|treatmentId|Updated Case|
 |POST|**/cases/:caseId/treatments** |Create a Test into a Case |Admin, Vet|**startDate**, endDate, **type**, **description**, observation|Treatment created|
 |DELETE|**/cases/:caseId/treatments/:treatmentId** |Delete a Treatment from a Case |Admin, Vet|-|List of Treatments inside Case|
-## 
+##
 - ### Notes
 
 |Verb|Route|Description|Auth.|Body Params|Returns|Notes|
@@ -171,7 +171,8 @@ All the endpoints are preceeded by `/api`.
 |PUT|**/pets/:petId**|Update a Pet by Id|Admin, Vet|name, birthdate, species, breed, genre, alive, description, alergies|Pet updated|_notes_ and _record_ are not allowed|
 |DELETE|**/pets/:petId**|Delete a Pet by Id|Admin|-|Pet deleted|
 |GET|**/pets/:petId/notes** |Get all public Notes and those wroten by current User|Admin, Vet, User|-|List of Notes|_Regular User must be owner of the Pet_|
-|POST|**/pets/:petId/notes** |Create a Note into a Pet|Admin|**date**, **text**, **public**|Created Note|_Regular User must be owner of the Pet_|
+|POST|**/pets/:petId/notes** |Create a Note into a Pet|Admin, Vet, User|**date**, **text**, **public**|Created Note|_Regular User must be owner of the Pet_|
+|PUT|**/pets/:petId/notes/:noteId** |Add Note to Pet|Admin|noteId|List of Notes||
 |DELETE|**/pets/:petId/notes/:noteId** |Delete a Note from a Pet|Admin, Vet, User|-|Notes inside Pet|_Regular User must be owner of the Pet_|
 |GET|**/pets/:petId/cases** |Get all into a Pet|Admin, Vet, User|-|List of Cases|_Regular User must be owner of the Pet_|
 |POST|**pets/:petId/cases** |Register a new Case into a Pet|Admin, Vet|**date**, observations, **purpose**, diet, habitat, tests, treatments, **vet**, vitalSigns|New Case
@@ -226,10 +227,10 @@ All the endpoints are preceeded by `/api`.
 |403|Hey, you don't have permissions to do that!
 |404|The resource is not found
 |409|There is a conflict with your request. To read the docs would be a great idea
-|500|Our server is suffering. Something very bad has happened. 
+|500|Our server is suffering. Something very bad has happened.
 
 
-## 
+##
 
 ## Team
 - **Daniel Jesús Brito Sosa** - _Desarrollador Web y Diseñador gráfico_ - [leynad1392](https://github.com/leynad1392)
