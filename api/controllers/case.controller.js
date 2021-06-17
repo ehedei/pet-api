@@ -192,59 +192,43 @@ exports.createTestInCase = async (req, res) => {
   }
 }
 
-// TODO Refactorizar
-exports.deleteTreatmentCase = (req, res) => {
-  CaseModel
-    .findById(req.params.caseId)
-    .populate('treatments')
-    .then(cases => {
-      let treatment
-      if (cases && (treatment = cases.treatments.find(c => c._id.toString() === req.params.treatmentId))) {
-        cases.treatments = cases.treatments.filter(c => c._id.toString() !== req.params.treatmentId)
-        treatment.remove()
-        cases.save()
-          .then(cases => res.status(200).json(cases.treatments))
-          .catch(error => {
-            console.log(error)
-            res.status(500).json({ msg: 'Error in Server' })
-          })
-      } else {
-        res.status(404).json({ msg: 'Resource does not exist' })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+exports.deleteTreatmentCase = async (req, res) => {
+  try {
+    const cases = await CaseModel.findById(req.params.caseId).populate('treatments')
+    let treatment
+    if (cases && (treatment = cases.treatments.find(c => c._id.toString() === req.params.treatmentId))) {
+      cases.treatments = cases.treatments.filter(c => c._id.toString() !== req.params.treatmentId)
+      treatment.remove()
+      await cases.save()
+      res.status(200).json(cases.treatments)
+    } else {
+      res.status(404).json({ msg: 'Resource does not exist' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
-// TODO Refactorizar
-exports.deleteTestCase = (req, res) => {
-  CaseModel
-    .findById(req.params.caseId)
-    .populate('tests')
-    .then(cases => {
-      let test
-      if (cases && (test = cases.tests.find(t => t._id.toString() === req.params.testId))) {
-        cases.tests = cases.tests.filter(t => t._id.toString() !== req.params.testId)
-        test.remove()
-        cases.save()
-          .then(cases => res.status(200).json(cases.tests))
-          .catch(error => {
-            console.log(error)
-            res.status(500).json({ msg: 'Error in Server' })
-          })
-      } else {
-        res.status(404).json({ msg: 'Resource does not exist' })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+exports.deleteTestCase = async (req, res) => {
+  try {
+    const cases = await CaseModel.findById(req.params.caseId).populate('tests')
+    let test
+    if (cases && (test = cases.tests.find(t => t._id.toString() === req.params.testId))) {
+      cases.tests = cases.tests.filter(t => t._id.toString() !== req.params.testId)
+      test.remove()
+      await cases.save()
+      res.status(200).json(cases.tests)
+    } else {
+      res.status(404).json({ msg: 'Resource does not exist' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
-function prepareQuery(query) {
+function prepareQuery (query) {
   const resultQuery = {}
   if (query.hasOwnProperty('date')) resultQuery.date = query.date
 
