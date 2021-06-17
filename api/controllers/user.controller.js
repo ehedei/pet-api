@@ -4,7 +4,7 @@ const { PetModel } = require('../models/pet.model')
 
 exports.getAllUsers = (req, res) => {
   UserModel
-    .find()
+    .find(prepareQuery(req.query))
     .then(users => {
       const userList = users.map(user => {
         return duplicateUserWithoutPass(user)
@@ -65,7 +65,7 @@ exports.deleteUser = (req, res) => {
     .findByIdAndDelete(req.params.userId)
     .then(user => {
       const newUser = duplicateUserWithoutPass(user)
-      res.status(202).json(newUser)
+      res.status(200).json(newUser)
     })
     .catch(error => {
       console.log(error)
@@ -196,4 +196,23 @@ exports.addPetInUser = (req, res) => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+  if (query.hasOwnProperty('username')) resultQuery.username = query.username
+
+  if (query.hasOwnProperty('email')) resultQuery.email = query.email
+
+  if (query.hasOwnProperty('firstName')) resultQuery.firstName = query.firstName
+
+  if (query.hasOwnProperty('lastName')) resultQuery.lastName = query.lastName
+
+  if (query.hasOwnProperty('phone')) resultQuery.phone = query.phone
+
+  if (query.hasOwnProperty('mobile')) resultQuery.mobile = query.mobile
+
+  if (query.hasOwnProperty('role')) resultQuery.role = query.role
+
+  return resultQuery
 }

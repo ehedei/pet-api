@@ -4,7 +4,7 @@ const { TestModel } = require('../models/test.model')
 
 exports.getAllCases = (req, res) => {
   CaseModel
-    .find()
+    .find(prepareQuery(req.query))
     .then((cases) => {
       if (cases) {
         res.status(200).json(cases)
@@ -279,4 +279,13 @@ exports.deleteTestCase = (req, res) => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+  if (query.hasOwnProperty('date')) resultQuery.date = query.date
+
+  if (query.hasOwnProperty('vet')) resultQuery.vet = query.vet
+
+  return resultQuery
 }

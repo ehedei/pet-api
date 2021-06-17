@@ -4,7 +4,7 @@ const { CaseModel } = require('../models/case.model')
 
 exports.getAllPets = (req, res) => {
   PetModel
-    .find()
+    .find(prepareQuery(req.query))
     .then(pets => {
       res.status(200).json(pets)
     })
@@ -80,7 +80,7 @@ exports.deletePet = (req, res) => {
     .findByIdAndDelete(req.params.petId)
     .then(pet => {
       if (pet) {
-        res.status(202).json(pet)
+        res.status(200).json(pet)
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }
@@ -382,4 +382,23 @@ function preparePet (body) {
   }
 
   return pet
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+  if (query.hasOwnProperty('name')) resultQuery.name = query.name
+
+  if (query.hasOwnProperty('birthdate')) resultQuery.birthdate = query.birthdate
+
+  if (query.hasOwnProperty('species')) resultQuery.species = query.species
+
+  if (query.hasOwnProperty('genre')) resultQuery.genre = query.genre
+
+  if (query?.alive.toLowerCase() === 'true') {
+    resultQuery.alive = true
+  } else if (query?.alive.toLowerCase() === 'false') {
+    resultQuery.alive = true
+  }
+
+  return resultQuery
 }

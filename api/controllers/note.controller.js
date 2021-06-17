@@ -2,7 +2,7 @@ const { NoteModel } = require('../models/note.model')
 
 exports.getAllNotes = (req, res) => {
   NoteModel
-    .find()
+    .find(prepareQuery(req.query))
     .then(notes => {
       res.status(200).json(notes)
     })
@@ -53,7 +53,7 @@ exports.deleteNote = (req, res) => {
   NoteModel.findByIdAndDelete(req.params.noteId)
     .then(note => {
       if (note) {
-        res.status(202).json(note)
+        res.status(200).json(note)
       } else {
         res.status(404).json({ msg: 'Resource not found' })
       }
@@ -89,4 +89,22 @@ exports.updateNote = (req, res) => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+
+  if (query.hasOwnProperty('author')) resultQuery.author = query.author
+
+  if (query.hasOwnProperty('date')) resultQuery.date = query.date
+
+  if (query.hasOwnProperty('public')) resultQuery.public = query.public
+
+  if (query?.public.toLowerCase() === 'true') {
+    resultQuery.alive = true
+  } else if (query?.alive.toLowerCase() === 'false') {
+    resultQuery.alive = true
+  }
+
+  return resultQuery
 }
