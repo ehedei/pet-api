@@ -176,8 +176,8 @@ All the endpoints are preceeded by `/api`.
 |GET|**/pets/:petId/cases** |Get all into a Pet|Admin, Vet, User|-|List of Cases|_Regular User must be owner of the Pet_|
 |POST|**pets/:petId/cases** |Register a new Case into a Pet|Admin, Vet|**date**, observations, **purpose**, diet, habitat, tests, treatments, **vet**, vitalSigns|New Case
 |PUT|**/pets/:petId/cases** |Add a Case to Pet profile|Admin, Vet|caseId|Updated Pet|
-|GET|**/pets/:petId/tests** |Get all tests done to Pet|Admin, Vet, User|-|List of Tests|_Regular User must be owner of the Pet_|
-|GET|**/pets/:petId/treatments** |Get all Treatments of a Pet|Admin, Vet, User|-|List of Treatments|_Regular User must be owner of the Pet_|_Query params accepted: **type**_|
+|GET|**/pets/:petId/tests** |Get all tests done to Pet|Admin, Vet, User|-|List of Tests|_Query params accepted: **type**_<br>_Regular User must be owner of the Pet_|
+|GET|**/pets/:petId/treatments** |Get all Treatments of a Pet|Admin, Vet, User|-|List of Treatments|_Regular User must be owner of the Pet_|_Query params accepted: **type**_<br>_Query params accepted: **type**_|
 |GET|**/pets/:petId/vitalsigns** |Get all VitalSigns of Pet|Admin, Vet, User|-|List of VitalSigns|_Regular User must be owner of the Pet_|_Query params accepted: **type**_|
 
 ##
@@ -185,7 +185,7 @@ All the endpoints are preceeded by `/api`.
 
 |Verb|Route|Description|Auth.|Body Params|Returns|Notes|
 |-|-|-|-|-|-|-|
-|GET|**/tests** |Get a list of all Tests|Admin, Vet|-|List with all Tests|
+|GET|**/tests** |Get a list of all Tests|Admin, Vet|-|List with all Tests|_Query params accepted: **date**, **type** and **vet**_
 |GET|**/notes/:testId** |Get a Test by testId|Admin, Vet|-|Test|
 |DELETE|**/notes/:testId** |Create a new Test |Admin, Vet|**date**, **type**, description, results, observations, **vet**|Created Test|
 |PUT|**/notes/:testId** |Update a Test by testId|Admin, Vet|date, type, description, results, vet|Updated Test|
@@ -196,7 +196,7 @@ All the endpoints are preceeded by `/api`.
 
 |Verb|Route|Description|Auth.|Body Params|Returns|Notes|
 |-|-|-|-|-|-|-|
-|GET|**/treatments** |Get a list of all Treatments|Admin, Vet|-|List with all Treatments|_Query params accepted: **date**, **type** and **vet**_
+|GET|**/treatments** |Get a list of all Treatments|Admin, Vet|-|List with all Treatments|_Query params accepted: **startDate**, and **type**_
 |GET|**/treatments/:treatmentId** |Get a Treatment by Id|Admin, Vet|-|Treatment|
 |POST|**/treatments** |Create a new Treatment |Admin, Vet|**startDate**, endDate, **type**, **description**, observation|Created Treatment|
 |PUT|**/treatments/:treatmentId** |Update a Treatment by Id|Admin, Vet|startDate, endDate, type, description, observation|Updated Treatment|
