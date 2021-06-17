@@ -241,7 +241,7 @@ exports.deleteTreatmentCase = (req, res) => {
         cases.treatments = cases.treatments.filter(c => c._id.toString() !== req.params.treatmentId)
         treatment.remove()
         cases.save()
-          .then(cases => res.status(200).json(cases))
+          .then(cases => res.status(200).json(cases.treatments))
           .catch(error => {
             console.log(error)
             res.status(500).json({ msg: 'Error in Server' })
@@ -266,7 +266,7 @@ exports.deleteTestCase = (req, res) => {
         cases.tests = cases.tests.filter(t => t._id.toString() !== req.params.testId)
         test.remove()
         cases.save()
-          .then(cases => res.status(200).json(cases))
+          .then(cases => res.status(200).json(cases.tests))
           .catch(error => {
             console.log(error)
             res.status(500).json({ msg: 'Error in Server' })

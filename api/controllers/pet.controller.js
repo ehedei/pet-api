@@ -335,7 +335,7 @@ exports.getTreatmentsPet = (req, res) => {
     })
 }
 
-exports.createCaseInPet = (req, res) => { 
+exports.createCaseInPet = (req, res) => {
   const cases = req.body
   const pet = req.params.petId
   PetModel
