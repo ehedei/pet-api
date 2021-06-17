@@ -265,6 +265,7 @@ exports.getVitalsPet = (req, res) => {
 }
 
 exports.getTestsPet = (req, res) => {
+  const type = req.query.type
   PetModel
     .findById(req.params.petId)
     .populate({
@@ -277,8 +278,11 @@ exports.getTestsPet = (req, res) => {
     .then((pet) => {
       if (pet) {
         if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
-          const tests = []
+          let tests = []
           pet.record.forEach(el => tests.push(...el.tests))
+          if (type) {
+            tests = tests.filter(test => test.type === type)
+          }
           res.status(200).json(tests)
         } else {
           res.status(403).json({ msg: 'Access not allowed' })
@@ -307,6 +311,7 @@ exports.getAllCasePet = (req, res) => {
 }
 
 exports.getTreatmentsPet = (req, res) => {
+  const type = req.query.type
   PetModel
     .findById(req.params.petId)
     .populate({
@@ -319,8 +324,12 @@ exports.getTreatmentsPet = (req, res) => {
     .then(pet => {
       if (pet) {
         if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
-          const treatments = []
+          let treatments = []
           pet.record.forEach(elem => treatments.push(...elem.treatments))
+          if (type) {
+            treatments = treatments.filter(treatment => treatment.type === type)
+          }
+
           res.status(200).json(treatments)
         } else {
           res.status(403).json({ msg: 'Access not allowed' })
