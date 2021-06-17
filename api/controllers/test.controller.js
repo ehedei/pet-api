@@ -2,7 +2,7 @@ const { TestModel } = require('../models/test.model')
 
 exports.getAllTests = (req, res) => {
   TestModel
-    .find()
+    .find(prepareQuery(req.query))
     .then((tests) => {
       if (tests) {
         res.status(200).json(tests)
@@ -78,4 +78,15 @@ exports.deleteTestById = (req, res) => {
       console.log(error)
       res.status(500).json({ msg: 'Error in Server' })
     })
+}
+
+function prepareQuery (query) {
+  const resultQuery = {}
+  if (query.hasOwnProperty('date')) resultQuery.date = query.date
+
+  if (query.hasOwnProperty('type')) resultQuery.type = query.type
+
+  if (query.hasOwnProperty('vet')) resultQuery.vet = query.vet
+
+  return resultQuery
 }
