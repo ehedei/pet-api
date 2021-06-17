@@ -176,9 +176,9 @@ All the endpoints are preceeded by `/api`.
 |GET|**/pets/:petId/cases** |Get all into a Pet|Admin, Vet, User|-|List of Cases|_Regular User must be owner of the Pet_|
 |POST|**pets/:petId/cases** |Register a new Case into a Pet|Admin, Vet|**date**, observations, **purpose**, diet, habitat, tests, treatments, **vet**, vitalSigns|New Case
 |PUT|**/pets/:petId/cases** |Add a Case to Pet profile|Admin, Vet|caseId|Updated Pet|
-|GET|**/pets/:petId/tests** |Get all tests done to Pet|Admin, Vet, User|-|List of Tests|_Query params accepted: **type**_<br>_Regular User must be owner of the Pet_|
-|GET|**/pets/:petId/treatments** |Get all Treatments of a Pet|Admin, Vet, User|-|List of Treatments|_Regular User must be owner of the Pet_|_Query params accepted: **type**_<br>_Query params accepted: **type**_|
-|GET|**/pets/:petId/vitalsigns** |Get all VitalSigns of Pet|Admin, Vet, User|-|List of VitalSigns|_Regular User must be owner of the Pet_|_Query params accepted: **type**_|
+|GET|**/pets/:petId/tests** |Get all tests done to Pet|Admin, Vet, User|-|List of Tests|- _Query params accepted: **type**_<br>- _Regular User must be owner of the Pet_|
+|GET|**/pets/:petId/treatments** |Get all Treatments of a Pet|Admin, Vet, User|-|List of Treatments|- _Query params accepted: **type**_<br>-_Regular User must be owner of the Pet_|
+|GET|**/pets/:petId/vitalsigns** |Get all VitalSigns of Pet|Admin, Vet, User|-|List of VitalSigns|_Regular User must be owner of the Pet_||
 
 ##
 - ### Test
