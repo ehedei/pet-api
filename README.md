@@ -233,7 +233,7 @@ All the endpoints are preceeded by `/api`.
 
 ## Team
 - **Daniel Jesús Brito Sosa** - _Desarrollador Web y Diseñador gráfico_ - [leynad1392](https://github.com/leynad1392)
-- **María José Siverio Pestana** - _Desarrolladora Web_ - [Arixka](https://github.com/Arixka)
+- **María José Siverio Pestana** - _Desarrolladora Multiplataforma_ - [Arixka](https://github.com/Arixka)
 - **Ehedei Hernández García** - _Desarrollador Multiplataforma_ - [ehedei](https://github.com/ehedei)
 
 ## License
