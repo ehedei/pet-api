@@ -95,6 +95,7 @@ exports.getAllTestInCase = (req, res) => {
     })
 }
 
+// TODO Refactorizar
 exports.addTestInCase = (req, res) => {
   CaseModel
     .findById(req.params.caseId)
@@ -123,6 +124,8 @@ exports.addTestInCase = (req, res) => {
     })
 }
 
+
+// TODO refactorizar
 exports.addTreatmentsInCase = (req, res) => {
   CaseModel
     .findById(req.params.caseId)
@@ -168,40 +171,25 @@ exports.getTreatmentsInCase = (req, res) => {
     })
 }
 
-exports.createTreatmentInCase = (req, res) => {
-  const treatments = req.body
-
-  CaseModel
-    .findById(req.params.caseId)
-    .populate('treatment')
-    .then(cases => {
-      if (cases) {
-        TreatmentModel
-          .create(treatments)
-          .then(newTreat => {
-            cases.treatments.push(newTreat)
-            cases.save(function (err) {
-              if (err) {
-                res.status(500).json({ msg: 'Error in Server' })
-              } else {
-                res.status(200).json(newTreat)
-              }
-            })
-          })
-          .catch(error => {
-            console.log(error)
-            res.status(500).json({ msg: 'Error in Server' })
-          })
-      } else {
-        res.status(404).json({ msg: 'Resource does not exist' })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+exports.createTreatmentInCase = async (req, res) => {
+  const treatment = req.body
+  try {
+    const cases = await CaseModel.findById(req.params.caseId)
+    if (cases) {
+      const newTreat = await TreatmentModel.create(treatment)
+      cases.treatments.push(newTreat._id)
+      await cases.save()
+      res.status(200).json(newTreat)
+    } else {
+      res.status(404).json({ msg: 'Resource does not exist' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
+// TODO Refactorizar
 exports.createTestInCase = (req, res) => {
   const test = req.body
   CaseModel
@@ -231,6 +219,8 @@ exports.createTestInCase = (req, res) => {
     })
 }
 
+
+// TODO Refactorizar
 exports.deleteTreatmentCase = (req, res) => {
   CaseModel
     .findById(req.params.caseId)
@@ -256,6 +246,7 @@ exports.deleteTreatmentCase = (req, res) => {
     })
 }
 
+// TODO Refactorizar
 exports.deleteTestCase = (req, res) => {
   CaseModel
     .findById(req.params.caseId)
@@ -281,7 +272,7 @@ exports.deleteTestCase = (req, res) => {
     })
 }
 
-function prepareQuery (query) {
+function prepareQuery(query) {
   const resultQuery = {}
   if (query.hasOwnProperty('date')) resultQuery.date = query.date
 
