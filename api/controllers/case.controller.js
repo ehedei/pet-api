@@ -95,63 +95,48 @@ exports.getAllTestInCase = (req, res) => {
     })
 }
 
-// TODO Refactorizar
-exports.addTestInCase = (req, res) => {
-  CaseModel
-    .findById(req.params.caseId)
-    .then((cases) => {
-      if (cases) {
-        const tests = cases.tests.find(t => t._id.toString() === req.body.testId)
-        if (!tests) {
-          cases.tests.push(req.body.testId)
-          cases.save(function (err) {
-            if (err) {
-              res.status(500).json({ msg: 'Error in Server' })
-            } else {
-              res.status(200).json(cases)
-            }
-          })
-        } else {
-          res.status(409).json({ msg: 'Resource already exists' })
-        }
+exports.addTestInCase = async (req, res) => {
+  try {
+    const cases = await CaseModel.findById(req.params.caseId)
+    const test = await TestModel.findById(req.body.testId)
+    if (cases && test) {
+      const tests = cases.tests.find(t => t._id.toString() === req.body.testId)
+      if (!tests) {
+        cases.tests.push(req.body.testId)
+        await cases.save()
+        res.status(200).json(cases)
       } else {
         res.status(409).json({ msg: 'Resource already exists' })
       }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+    } else {
+      res.status(404).json({ msg: 'Resource not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
-
-// TODO refactorizar
-exports.addTreatmentsInCase = (req, res) => {
-  CaseModel
-    .findById(req.params.caseId)
-    .then((cases) => {
-      if (cases) {
-        const treatment = cases.treatments.find(treatment => treatment._id.toString() === req.body.treatmentId)
-        if (!treatment) {
-          cases.treatments.push(req.body.treatmentId)
-          cases.save(function (err) {
-            if (err) {
-              res.status(500).json({ msg: 'Error in Server' })
-            } else {
-              res.status(200).json(cases)
-            }
-          })
-        } else {
-          res.status(409).json({ msg: 'Resource already exists' })
-        }
+exports.addTreatmentsInCase = async (req, res) => {
+  try {
+    const cases = await CaseModel.findById(req.params.caseId)
+    const treatment = await TreatmentModel.findById(req.params.treatmentId)
+    if (cases && treatment) {
+      const treatmentId = cases.treatments.find(treatment => treatment._id.toString() === req.body.treatmentId)
+      if (!treatmentId) {
+        cases.treatments.push(req.body.treatmentId)
+        await cases.save()
+        res.status(200).json(cases)
       } else {
-        res.status(404).json({ msg: 'Resource not found' })
+        res.status(409).json({ msg: 'Resource already exists' })
       }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+    } else {
+      res.status(404).json({ msg: 'Resource not found' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
 
 exports.getTreatmentsInCase = (req, res) => {
@@ -189,36 +174,23 @@ exports.createTreatmentInCase = async (req, res) => {
   }
 }
 
-// TODO Refactorizar
-exports.createTestInCase = (req, res) => {
+exports.createTestInCase = async (req, res) => {
   const test = req.body
-  CaseModel
-    .findById(req.params.caseId)
-    .populate('test')
-    .then((cases) => {
-      if (cases) {
-        TestModel
-          .create(test)
-          .then(newTest => {
-            cases.tests.push(newTest)
-            cases.save(function (err) {
-              if (err) {
-                res.status(500).json({ msg: 'Error in Server' })
-              } else {
-                res.status(200).json(newTest)
-              }
-            })
-          })
-      } else {
-        res.status(404).json({ msg: 'Resource does not exist' })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      res.status(500).json({ msg: 'Error in Server' })
-    })
+  try {
+    const cases = await CaseModel.findById(req.params.caseId)
+    if (cases) {
+      const newTest = await TestModel.create(test)
+      cases.tests.push(newTest._id)
+      await cases.save()
+      res.status(200).json(newTest)
+    } else {
+      res.status(404).json({ msg: 'Resource does not exist' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ msg: 'Error in Server' })
+  }
 }
-
 
 // TODO Refactorizar
 exports.deleteTreatmentCase = (req, res) => {

@@ -114,7 +114,8 @@ exports.getNotesFromPet = (req, res) => {
 exports.addNoteToPet = async (req, res) => {
   try {
     const pet = await PetModel.findById(req.params.petId)
-    if (pet) {
+    const note = await NoteModel.findById(req.body.noteId)
+    if (pet && note) {
       pet.notes.push(req.body.noteId)
       await pet.save()
       res.status(200).json(pet.notes)
@@ -176,7 +177,8 @@ exports.deleteNoteFromPet = async (req, res) => {
 exports.addCaseInPet = async (req, res) => {
   try {
     const pet = await PetModel.findById(req.params.petId)
-    if (pet) {
+    const cases = await CaseModel.findById(req.body.caseId)
+    if (pet && cases) {
       const cases = pet.record.find(c => c._id.toString() === req.body.caseId)
       if (!cases) {
         pet.record.push(req.body.caseId)
