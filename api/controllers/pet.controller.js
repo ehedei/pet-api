@@ -394,10 +394,10 @@ function prepareQuery (query) {
 
   if (query.hasOwnProperty('genre')) resultQuery.genre = query.genre
 
-  if (query?.alive.toLowerCase() === 'true') {
+  if (query.alive?.toLowerCase() === 'true') {
     resultQuery.alive = true
-  } else if (query?.alive.toLowerCase() === 'false') {
-    resultQuery.alive = true
+  } else if (query.alive?.toLowerCase() === 'false') {
+    resultQuery.alive = false
   }
 
   return resultQuery
