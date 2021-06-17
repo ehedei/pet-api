@@ -5,7 +5,7 @@ const router = require('express').Router()
 
 router.get('/', checkAuth, checkAdminOrVet, getAllPets)
 router.get('/:petId', checkAuth, checkAdminOrVet, getPetById)
-router.get('/:petId/cases', checkAuth, checkAdminOrVet, getAllCasePet)
+router.get('/:petId/cases', checkAuth, getAllCasePet)
 router.get('/:petId/notes', checkAuth, getNotesFromPet)
 router.get('/:petId/tests', checkAuth, getTestsPet)
 router.get('/:petId/treatments', checkAuth, checkAdminOrVet, getTreatmentsPet)

@@ -302,7 +302,15 @@ exports.getAllCasePet = (req, res) => {
     .findById(req.params.petId)
     .populate('record')
     .then(pet => {
-      res.status(200).json(pet.record)
+      if (pet) {
+        if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
+          res.status(200).json(pet.record)
+        } else {
+          res.status(403).json({ msg: 'Access not allowed' })
+        }
+      } else {
+        res.status(404).json({ msg: 'Resource not found' })
+      }
     })
     .catch((error) => {
       console.log(error)

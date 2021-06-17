@@ -147,6 +147,10 @@ function prepareUserUpdates (req, res) {
           const newUser = duplicateUserWithoutPass(user)
           res.status(200).json(newUser)
         })
+        .catch(error => {
+          console.log(error)
+          res.status(500).json({ msg: 'Error in Server' })
+        })
     })
     .catch(error => {
       console.log(error)
