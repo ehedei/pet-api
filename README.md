@@ -196,7 +196,7 @@ All the endpoints are preceeded by `/api`.
 
 |Verb|Route|Description|Auth.|Body Params|Returns|Notes|
 |-|-|-|-|-|-|-|
-|GET|**/treatments** |Get a list of all Treatments|Admin, Vet|-|List with all Treatments|_Query params accepted: **startDate**, and **type**_
+|GET|**/treatments** |Get a list of all Treatments|Admin, Vet|-|List with all Treatments|_Query params accepted: **startdate**, and **type**_
 |GET|**/treatments/:treatmentId** |Get a Treatment by Id|Admin, Vet|-|Treatment|
 |POST|**/treatments** |Create a new Treatment |Admin, Vet|**startDate**, endDate, **type**, **description**, observation|Created Treatment|
 |PUT|**/treatments/:treatmentId** |Update a Treatment by Id|Admin, Vet|startDate, endDate, type, description, observation|Updated Treatment|
@@ -207,7 +207,7 @@ All the endpoints are preceeded by `/api`.
 
 |Verb|Route|Description|Auth.|Body Params|Returns|Notes|
 |-|-|-|-|-|-|-|
-|GET|**/users** |Get a list of all Users|Admin, Vet|-|List with all Users|
+|GET|**/users** |Get a list of all Users|Admin, Vet|-|List with all Users|_Query params accepted: **username**, **email**, **firstname**, **lastname**, **phone**, **mobile** and **role**_|
 |GET|**/users/:userId** |Get an User by userId|Admin, Vet|-|User|
 |GET|**/users/profile** |User get own profile|Admin, Vet, User|-|User|
 |POST|**/users**|Register a new User in the App|Admin, Vet|**username**, **email**, **password**, firstName, lastName, phone, mobile, address: { **direction**, **city**, state, country}|User created|- Endpoint ignores _pets_ and _role_<br>- _address_ is not required, but if it is filled, **_city_** and **_direction_** will be _required_|
