@@ -165,7 +165,11 @@ exports.deleteNoteFromPet = async (req, res) => {
         pet.notes = pet.notes.filter(note => note._id.toString() !== req.params.noteId)
         await note.remove()
         await pet.save()
-        const notes = pet.notes.filter(note => note.author === res.locals.user._id.toString())
+
+        let notes = pet.notes
+        if (res.locals.user.role !== 'admin') {
+          notes = pet.notes.filter(note => note.author === res.locals.user._id.toString())
+        }
         res.status(202).json(notes)
       } else {
         res.status(403).json({ msg: 'Access not allowed' })
