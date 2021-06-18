@@ -97,7 +97,10 @@ exports.getNotesFromPet = (req, res) => {
     .then(pet => {
       if (pet) {
         if (res.locals.user.role !== 'user' || res.locals.user.pets.includes(pet._id.toString())) {
-          const notes = pet.notes.filter(note => note.public === true || note.author === res.locals.user._id.toString())
+          let notes = pet.notes
+          if (res.locals.user.role !== 'admin') {
+            notes = notes.filter(note => note.public === true || note.author.toString() === res.locals.user._id.toString())
+          }
 
           res.status(200).json(notes)
         } else {
